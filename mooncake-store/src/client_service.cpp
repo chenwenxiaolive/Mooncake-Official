@@ -2583,8 +2583,7 @@ ErrorCode Client::InitLocalHotCache() {
                 "Invalid MC_STORE_LOCAL_HOT_ADMISSION_THRESHOLD='" + ev_str +
                 "', using default";
             try {
-                unsigned long long v =
-                    std::stoull(ev_str, nullptr, 10);
+                unsigned long long v = std::stoull(ev_str, nullptr, 10);
                 if (v > 0 && v <= 255) {
                     admission_threshold_ = static_cast<uint8_t>(v);
                 } else {
