@@ -2573,6 +2573,27 @@ ErrorCode Client::InitLocalHotCache() {
         hot_cache_handler_ =
             std::make_unique<LocalHotCacheHandler>(hot_cache_, thread_num);
         admission_sketch_ = std::make_unique<CountMinSketch>();
+
+        // MC_STORE_LOCAL_HOT_ADMISSION_THRESHOLD: minimum CMS count before a
+        // key is admitted to hot cache (default 2).
+        if (const char* ev =
+                std::getenv("MC_STORE_LOCAL_HOT_ADMISSION_THRESHOLD")) {
+            std::string ev_str(ev);
+            std::string error_msg =
+                "Invalid MC_STORE_LOCAL_HOT_ADMISSION_THRESHOLD='" + ev_str +
+                "', using default";
+            try {
+                unsigned long long v =
+                    std::stoull(ev_str, nullptr, 10);
+                if (v > 0 && v <= 255) {
+                    admission_threshold_ = static_cast<uint8_t>(v);
+                } else {
+                    LOG(WARNING) << error_msg;
+                }
+            } catch (const std::exception&) {
+                LOG(WARNING) << error_msg;
+            }
+        }
     }
     return ErrorCode::OK;
 }

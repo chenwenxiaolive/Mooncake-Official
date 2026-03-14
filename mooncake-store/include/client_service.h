@@ -468,7 +468,7 @@ class Client {
         if (admission_sketch_ == nullptr) {
             return true;
         }
-        return admission_sketch_->increment(key) >= kAdmissionThreshold;
+        return admission_sketch_->increment(key) >= admission_threshold_;
     }
 
    private:
@@ -673,7 +673,7 @@ class Client {
 
     // Frequency admission: only cache keys whose CMS count >= threshold
     std::unique_ptr<CountMinSketch> admission_sketch_;
-    static constexpr uint8_t kAdmissionThreshold = 2;
+    uint8_t admission_threshold_ = 2;
 };
 
 }  // namespace mooncake
